@@ -1,8 +1,10 @@
-import User from "../models/user.model.js"
-console.log("Webhook endpoint hit");
+import User from "../models/user.model.js";
+import {Webhook} from "svix";
+//console.log("Webhook endpoint hit");
 
-export const clerkWebHook = async (requestAnimationFrame,res)=>{
+export const clerkWebHook = async (req,res)=>{
     const WEBHOOK_SECRET =process.env.CLERK_WEBHOOK_SECRET;
+
     if (!WEBHOOK_SECRET){
         throw new Error("Webhook secret needed!");
     }
@@ -16,13 +18,29 @@ export const clerkWebHook = async (requestAnimationFrame,res)=>{
         evt = wh.verify(payload, headers);
     } catch (err) {
         res.status(400).json({
-            message:"Webhook verification failed!",
+            message: "Webhook verification failed!",
         });
+        return;
     }
- console.log(evt.data);
-    //if (evt.type === 'user.created') {
-    //    const newUser=new UserActivation({
-    //        clerkUserId:evt.data.id,
-    //    });
-    //  }
-}
+
+// console.log(evt.data);
+
+if (evt.type === 'user.created') {
+    try {
+      const newUser = new User({
+        clerkUserId: evt.data.id,
+        username: evt.data.username || evt.data.email_addresses[0].email_address,
+        email: evt.data.email_addresses[0].email_address,
+        img: evt.data.profile_img_url
+      });
+      await newUser.save();
+      console.log("User saved to DB");
+    } catch (err) {
+      console.error("Error saving user:", err.message);
+    }
+  }
+
+      return res.status(200).json({
+        message: "Webhook received!",
+      });
+};
