@@ -10,7 +10,7 @@ import webhookRouter from "./routes/webhook.route.js";
 
 
 const app = express();
-
+app.use("/webhooks", webhookRouter);
 app.use(express.json());
  
 //app.get("/test", (req, res) => {
@@ -19,8 +19,6 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
-app.use("/webhooks", webhookRouter);
-
 
 
 
@@ -33,6 +31,7 @@ app.use((error, req, res, next)=>{
     stack:error.stack,
   });
 });
+
 
 app.listen(3000, () => {
     connectDB()
