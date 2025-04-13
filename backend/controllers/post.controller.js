@@ -12,7 +12,6 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {   
-
     const clerkUserId=req.auth.userId;
 
     console.log(req.headers)
@@ -22,13 +21,28 @@ export const createPost = async (req, res) => {
     }
 
     const user = await User.findOne({clerkUserId});
+
     if (!user){
+        console.log("User not found for clerkUserId:", clerkUserId);
         return res.status(404).json("User not found!");
     }
 
-    const newPost = new Post({user: user._id, ...req.body});
+    let slug=req.body.title.replace(/ /g, "-").toLowerCase();
 
+    let existingPost=await Post.findOne({ slug });
+
+    let counter =2;
+
+    while(existingPost){
+        slug=`${slug}-${counter}`;
+        existingPost=await Post.findOne({ slug });
+        counter++;
+    }
+
+    const newPost = new Post({user: user._id, slug, ...req.body});
+    console.log("Post to be saved:", newPost);
     const post = await newPost.save();
+    console.log("Post saved successfully:", post);
     res.status(200).json(post);
 };
 
@@ -54,6 +68,3 @@ export const deletePost = async (req, res) => {
 
     res.status(200).json("Post has been deleted");
 };
-
-    
-    
