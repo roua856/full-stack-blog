@@ -4,15 +4,19 @@ import ReactQuill from "react-quill-new";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 
 const Write = () => {
     const {isLoaded , isSignedIn} = useUser()
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState("");
+
+    const navigate = useNavigate()
+
     const{getToken}=useAuth()
 
         const mutation = useMutation({
-          mutationFn: async (newTodo) => {
+          mutationFn: async (newPost) => {
             const token=await getToken();
             return axios.post(`${import.meta.env.VITE_API_URL}/posts`, newPost, {
                 headers: {
@@ -20,6 +24,9 @@ const Write = () => {
                 },
             });
           },
+          onSuccess:(res)=>{
+            navigate(`/${res.data.slug}`)
+          }
         });
 
     if(!isLoaded) {
@@ -41,7 +48,7 @@ const Write = () => {
             content: value,
         };
         console.log(data);
-        
+
         mutation.mutate(data)
     };
 
@@ -64,10 +71,15 @@ const Write = () => {
                 </div>
                 <textarea  className="p-4 rounded-xl bg-white shadow-md" name="desc" placeholder="A Short Description"/>
                 <ReactQuill theme="snow" className="flex-1 rounded-xl bg-white shadow-md"L value={value} onChange={setValue}/>
-                <button className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36">Send</button>
+                <button 
+                disabled={mutation.isPending} 
+                className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed">
+                    {mutation.isPending ? "Loading..." : "Send"}
+                </button>
+                {mutation.isError && <span> {mutation.error.message} </span>}
             </form>
         </div>
     )
 }
 
-export default Write 
+export default Write ;

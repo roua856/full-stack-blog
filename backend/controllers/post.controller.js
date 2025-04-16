@@ -12,6 +12,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {   
+    console.log("createPost called");
     const clerkUserId=req.auth.userId;
 
     console.log(req.headers)
@@ -40,9 +41,7 @@ export const createPost = async (req, res) => {
     }
 
     const newPost = new Post({user: user._id, slug, ...req.body});
-    console.log("Post to be saved:", newPost);
     const post = await newPost.save();
-    console.log("Post saved successfully:", post);
     res.status(200).json(post);
 };
 
