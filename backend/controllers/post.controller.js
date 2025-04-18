@@ -1,3 +1,4 @@
+import ImageKit from "imagekit";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 
@@ -12,7 +13,7 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {   
-    console.log("createPost called");
+    
     const clerkUserId=req.auth.userId;
 
     console.log(req.headers)
@@ -66,4 +67,15 @@ export const deletePost = async (req, res) => {
     }
 
     res.status(200).json("Post has been deleted");
+};
+
+const imagekit=new ImageKit({
+  urlEndpoint: process.env.IK_URL_ENDPOINT,
+  publicKey: process.env.IK_PUBLIC_KEY,
+  privateKey: process.env.IK_PRIVATE_KEY,
+})
+export const uploadAuth=async(req,res)=>{
+
+    const result=imagekit.getAuthenticationParameters();
+    res.send(result);
 };
