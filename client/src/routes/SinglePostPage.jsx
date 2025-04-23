@@ -1,28 +1,50 @@
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import Image from "../components/Image"
 import PostMenuActions from "../components/PostMenuActions";
 import Search from "../components/Search";
 import Comments from "../components/Comments";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+
+const fetchPost= async (slug) => {
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts/${slug}`);
+    return res.data;
+};
 
 const SinglePostPage = () => {
+
+    const {slug} = useParams();
+
+    const {isPending, error, data} = useQuery({
+        queryKey:["post",slug],
+        queryFn:()=>fetchPost(slug),
+    });
+
+    if(isPending) return "loading...";
+    if(error) return "Something went wrong..."+ error.message;
+    if(!data) return "Post not Found!";
+
     return (
         <div className='flex flex-col gap-8'>
             {/*details*/}
             <div className="flex gap-8">
                 <div className="lg:w-3/5 flex-col gap-8">
-                <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">Pourquoi le Web Design est plus qu’un simple look</h1>
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
-                <span>Written by</span>
-              <Link className="text-blue-800">John Doe</Link>
-                <span>on</span>
-                <Link className="text-blue-800">Web Design</Link>
-                <span> 3 days ago</span>
-                </div> 
-                <p className="text-gray-500 font-medium"> Quand on parle de Web Design, beaucoup pensent uniquement à l'apparence d’un site. Mais en réalité, le design web va bien au-delà du style : il influence l’expérience utilisateur, la navigation, l’accessibilité et même les performances du site. Dans cet article, je partage pourquoi un bon design ne se résume pas à l’esthétique, mais joue un rôle central dans la réussite d’un projet web.</p>
+                    <h1 className="text-xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold">
+                        {data.title}
+                    </h1>
+                    <div className="flex items-center gap-2 text-gray-400 text-sm">
+                        <span>Written by</span>
+                    <Link className="text-blue-800">{data.user.username}</Link>
+                        <span>on</span>
+                        <Link className="text-blue-800">{data.category}</Link>
+                        <span> {format(data.createdAt)}</span>
+                    </div> 
+                    <p className="text-gray-500 font-medium"> {data.desc}</p>
                 </div>
-                <div className="hidden lg:block w-2/5">
-                    <Image src="postImg.jpeg" w="600" className="rounded-2xl"/>
-                </div>
+                {data.img && <div className="hidden lg:block w-2/5">
+                    <Image src={data.img} w="600" className="rounded-2xl"/>
+                </div>}
             </div>
              {/*content*/}
              <div className="flex flex-col md:flex-row gap-12">
@@ -43,9 +65,9 @@ const SinglePostPage = () => {
              < h1 className="mb-8 mb-4 text-sm font-medium">Author</h1>
              <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-8">
-                <Image src="userImg.jpeg" className="w-12 h-12 rounded-full object-cover"
-                w="48" h="48"/>
-                <Link className="text-blue-800">John Does</Link>
+                {data.user.img && <Image src={data.user.img} className="w-12 h-12 rounded-full object-cover"
+                w="48" h="48"/>}
+                <Link className="text-blue-800">{data.user.username}</Link>
                 </div>
                 <p className="text-sm text-gray-500">Designer web, je partage ici ma vision d’un design à la fois esthétique, fonctionnel et centré sur l’utilisateur.</p>
                 <div className="flex gap-2">
@@ -58,7 +80,7 @@ const SinglePostPage = () => {
              </div>
             </div>
              
-             <PostMenuActions/>
+             <PostMenuActions post={data}/>
              <h1 className="mt-8 mb-4 text-sm font-medium">Categories</h1>
              <div className="flex flex-col gap-2 text-sm">
             <Link className="underline">All</Link>
@@ -72,7 +94,7 @@ const SinglePostPage = () => {
              <Search/>
              </div>
          </div>
-         <Comments />
+         <Comments postId={data._id}/>
         </div>
     );
 };

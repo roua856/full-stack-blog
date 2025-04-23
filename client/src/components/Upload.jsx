@@ -21,33 +21,35 @@ const authenticator =  async () => {
 
 const Upload=({children, type, setProgress, setData})=>{
 
-    const ref=useRef(null)
+    const ref=useRef(null);
 
-    const onError= (err)=>{
+    const onError = (err)=>{
         console.log(err);
-        toast.error("Image upload failed");
+        toast.error("Image upload failed!");
     };
-    const onSuccess= (res)=>{
+    const onSuccess = (res)=>{
         console.log(res);
         setData(res);
     };
     const onUploadProgress= (progress)=>{
-        console.log(progress);
         setProgress(Math.round((progress.loaded/progress.total)*100));
     };
 
     return (
         <IKContext publicKey={import.meta.env.VITE_IK_PUBLIC_KEY} urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT} authenticator={authenticator} >
             <IKUpload
+                //fileName="test-upload.png"
                 useUniqueFileName
+                
                 onError={onError}
                 onSuccess={onSuccess}
                 onUploadProgress={onUploadProgress}
                 className="hidden"
                 ref={ref}
                 accept={`${type}/*`}
+                
             />
-            <div className="cursor-pointer" onClick={()=>ref.current.click()}> {children} </div>
+            <div className="cursor-pointer" onClick={() => ref.current.click()}> {children} </div>
         </IKContext>
     )
 }
