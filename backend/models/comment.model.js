@@ -1,4 +1,4 @@
-import {schema, Types} from "mongoose"
+import {Schema, Types} from "mongoose"
 import mongoose from "mongoose"
 
 const commentSchema = new Schema ( {

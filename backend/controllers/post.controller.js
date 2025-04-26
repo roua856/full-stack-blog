@@ -112,13 +112,18 @@ export const featurePost = async (req, res) => {
     res.status(200).json("Post has been deleted");
 };
 
+
 const imagekit = new ImageKit({
-    urlEndpoint: process.env.IK_URL_ENDPOINT,
-    publicKey: process.env.IK_PUBLIC_KEY,
-    privateKey: process.env.IK_PRIVATE_KEY,
+/*
+    urlEndpoint:process.env.IK_URL_ENDPOINT,
+    publicKey:process.env.IK_PUBLIC_KEY,
+    privateKey:process.env.IK_PRIVATE_KEY,
+*/
+    urlEndpoint:"https://ik.imagekit.io/raaaxwudj/",
+    publicKey:"public_B6NMEXR9YifIC0gHDDOcbYBHHfA=",
+    privateKey:"private_Au0Lzdqb6D4HtTnn38GRc56cyaU=",
   });
 
-console.log(process.env.IK_URL_ENDPOINT, process.env.IK_PUBLIC_KEY, process.env.IK_PRIVATE_KEY);
 
 export const uploadAuth=async(req,res)=>{
 

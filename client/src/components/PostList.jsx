@@ -27,7 +27,7 @@ const PostList = () => {
             lastPage.hasMore ? pages.length +1 : undefined,
       });
 
-      console.log(data);
+      console.log("Pagination State:", data);
 
       if (status === "loading") return "Loading...";
     
@@ -47,9 +47,9 @@ const PostList = () => {
                 </p>
             }
             >
-                {allPosts.map(post=>{
-                            <PostListItem key={post._id} post={post} />
-                        })}
+            {allPosts.map((post)=>(
+                <PostListItem key={post._id} post={post} />
+            ))}
         </InfiniteScroll>
                         
     );
