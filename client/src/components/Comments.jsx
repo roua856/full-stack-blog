@@ -39,17 +39,16 @@ const Comments = ({postId}) => {
 
       });
 
-
-    const handleSubmit = (e) =>{
+    const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-
+      
         const data = {
-            desc: formData.get("desc"),
+          desc:formData.get("desc"),
         };
-
+      
         mutation.mutate(data);
-    }
+      };
 
     return (
         <div className='flex flex-col gap-78 lg:w-3/5 mb-12'>

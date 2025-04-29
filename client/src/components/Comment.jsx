@@ -14,21 +14,29 @@ const Comment = ({comment, postId}) => {
 
     const mutation = useMutation({
         mutationFn: async () => {
-          const token=await getToken();
-          return axios.delete(`${import.meta.env.VITE_API_URL}/comments/${comment._id}`, {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          });
-        },
-        onSuccess:()=>{
-            queryClient.invalidateQueries({queryKey:["comments",postId]})
-            toast.success("Comment deleted successfully!");
-        },
-        onError:(error)=>{
-            toast.error(error.response.data);
-        },
+            console.log("Comment ID being sent:", commentId); // Debug log
+    if (!commentId) {
+        console.error("Error: Comment ID is undefined!");
+        return; // Prevent invalid API call
+    }
 
+          const token = await getToken();
+          return axios.delete(
+            `${import.meta.env.VITE_API_URL}/comments/${comment._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        },
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+          toast.success("Comment deleted successfully");
+        },
+        onError: (error) => {
+          toast.error(error.response.data);
+        },
       });
 
     return (
@@ -38,7 +46,7 @@ const Comment = ({comment, postId}) => {
                 <span className="font-medium">{comment.user.username}</span>
                 <span className="text-sm text-gray-500">{format(comment.createdAt)}</span>
                 {user && (comment.user.username === user.username || role==="admin") && 
-                (<span className="test-xs text-red-300 hover:text-red-500 cursor-pointer" onClick={mutation.mutate()}>
+                (<span className="test-xs text-red-300 hover:text-red-500 cursor-pointer" onClick={() => mutation.mutate()} >
                     delete
                     {mutation.isPending && <span>(in progress)</span>}
                 </span>

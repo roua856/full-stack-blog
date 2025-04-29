@@ -20,15 +20,15 @@ const Write = () => {
 
 useEffect(()=>{
     img && setValue(prev=>prev+`<p><image scr="${img.url}"/></p>`)
-},[img])
+},[img]);
 
 useEffect(()=>{
     video && setValue(prev=>prev+`<p><iframe class="ql-video" scr="${video.url}"/></p>`)
-},[video])
+},[video]);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    const{getToken}=useAuth()
+    const{getToken}=useAuth();
 
         const mutation = useMutation({
           mutationFn: async (newPost) => {
