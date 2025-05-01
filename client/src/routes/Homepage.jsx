@@ -21,10 +21,11 @@ const Homepage = () => {
                     </h1>
                     <p className="mt-8 text-md md:text-xl">
                     Discover a world of insightful articles, expert opinions, and the latest trends across various domains. Whether you're passionate about web design, development, marketing, or databases, BlogSphere is your go-to platform for inspiration and knowledge.
-
-                    <p className="text-gray-700 text-l md:text-xl lg:text-xl font-bold">Start your journey today – read, write, and share your ideas with a community of like-minded thinkers! 🚀</p>
                     </p>
+                    <p className="text-gray-700 text-l md:text-xl lg:text-xl font-bold">Start your journey today – read, write, and share your ideas with a community of like-minded thinkers! 🚀</p>
+                    
                 </div>
+
                 {/* animated button */}
                 <Link to="write" className=" hidden md:block relative">
                 <svg
