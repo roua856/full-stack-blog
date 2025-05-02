@@ -3,10 +3,10 @@ import Image from "./Image";
 import {format} from "timeago.js";
 
 const PostListItem = ({post}) => {
+    
     if (!post || !post.user) {
         return <p>Missing post or user data</p>;
     }
-
     return (
         <div className='flex flex-col xl:flex-row gap-8 mb-12'>
             {/*image */}

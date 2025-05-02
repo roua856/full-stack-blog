@@ -26,8 +26,6 @@ const Comments = ({ postId }) => {
     mutationFn: async (newComment) => {
       const token = await getToken();
 
-      //axios.post(`${import.meta.env.VITE_API_URL}/comments`, ...)
-
       return axios.post(
         `${import.meta.env.VITE_API_URL}/comments/${postId}`,
         newComment,
@@ -85,7 +83,7 @@ const Comments = ({ postId }) => {
                 desc: `${mutation.variables.desc} (Sending...)`,
                 createdAt: new Date(),
                 user: {
-                  img: user.imageUrl,
+                  img: user.img,    //user.imageUrl
                   username: user.username,
                 },
               }}
